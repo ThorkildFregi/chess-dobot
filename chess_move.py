@@ -1,7 +1,7 @@
 from stockfish import Stockfish
 from typing import Dict
 
-stockfish = Stockfish(path='./stockfish/stockfish-windows-x86-64-avx2.exe')
+stockfish = Stockfish()
 
 def board_visual(fen: str) -> str:
     stockfish.set_fen_position(fen)
