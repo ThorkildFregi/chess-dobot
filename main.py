@@ -15,6 +15,8 @@ while play:
     checkmate = False
     while checkmate == False:
         if chessgame.get_moves() == []:
+            print("Checkmate")
+            
             checkmate = True
             break
 
