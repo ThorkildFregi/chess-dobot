@@ -1,1 +1,2 @@
 stockfish-3.28.0
+Chessnut-0.4.1
