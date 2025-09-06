@@ -1,16 +1,12 @@
-from stockfish import Stockfish
+from chess_move import *
 
-stockfish = Stockfish(path='./stockfish/stockfish-windows-x86-64-avx2.exe')
+play = True
 
-stockfish.set_skill_level(20)
-print(stockfish.get_parameters())
+while play:
+    skill_level = int(input("Skill level of stockfish"))
 
-print(stockfish.get_board_visual())
+    set_game_parameters(skill_level)
 
-best_move = stockfish.get_best_move()
-print(best_move)
-
-stockfish.set_position([best_move ,"e7e6"])
-
-print(stockfish.get_board_visual())
-print(stockfish.get_best_move())
+    new_game()
+    
+    
