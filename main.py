@@ -1,6 +1,24 @@
 from Chessnut.game import InvalidMove
+from serial.tools import list_ports
 from Chessnut import Game
 from chess_move import *
+import pydobot
+
+# 50 -> 4.5
+# 25 -> 2.25
+
+available_ports = list_ports.comports()
+print(f'available ports: {[x.device for x in available_ports]}')
+port = available_ports[1].device
+
+device = pydobot.Dobot(port=port, verbose=True)
+
+base_coordinates = {"x": 123, "y": 4, "z": -17, "r": 0}
+
+device.move_to(123, 4, -17, 0, True)
+
+column = {"e" : 29}
+row = {}
 
 play = True
 
@@ -38,3 +56,5 @@ while play:
 
     if play_again.lower() == "no":
         play = False
+
+device.close()
