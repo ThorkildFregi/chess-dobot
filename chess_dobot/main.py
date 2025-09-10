@@ -1,60 +1,98 @@
 from Chessnut.game import InvalidMove
-from serial.tools import list_ports
 from Chessnut import Game
-from chess_move import *
-import pydobot
+import dobot_move
+import chess_move
+import logging
 
-# 50 -> 4.5
-# 25 -> 2.25
+# Config for logging
+logging.basicConfig(
+    filename="./../temp/chess.log",  # Log file path
+    filemode="w",
+    datefmt="%d-%m %H:%M",
+    format="%(asctime)s %(name)-12s %(levelname)-8s %(message)s",
+    level=logging.INFO,  # Set to info level globally
+)
 
-available_ports = list_ports.comports()
-print(f'available ports: {[x.device for x in available_ports]}')
-port = available_ports[1].device
+# Create handler to show log
+console = logging.StreamHandler()
+console.setLevel(logging.INFO)  # Set console to info level
 
-device = pydobot.Dobot(port=port, verbose=True)
+logging.getLogger("").addHandler(console)
 
-base_coordinates = {"x": 123, "y": 4, "z": -17, "r": 0}
+def capture_piece(piece_square: str):
+    ### Take the piece to capture and throw it ###
 
-device.move_to(123, 4, -17, 0, True)
+    dobot_move.move_to_square(piece_square)
+    dobot_move.throw_piece()
 
-column = {"e" : 29}
-row = {}
+def move_piece(departure: str, arrival: str):
+    ### Move a piece form a square to another ###
 
-play = True
+    dobot_move.move_to_square(departure)
+    dobot_move.take_piece()
+    dobot_move.move_to_square(arrival)
+    dobot_move.drop_piece()
+    dobot_move.to_base_coord()
 
-while play:
+play_again = True # Basic bool to know if play again
+
+while play_again:
+    # Set skill of stockfish and print his parameters
     skill_level = int(input("Skill level of stockfish : "))
+    logging.info(chess_move.set_game_parameters(skill_level))
 
-    print(set_game_parameters(skill_level))
-
+    # Init chessgame with Chessnut
     chessgame = Game()
-    print(board_visual(chessgame))
+    logging.info(chess_move.board_visual(chessgame))
 
     checkmate = False
     while checkmate == False:
+        # Checkmate detection
         if chessgame.get_moves() == []:
-            print("Checkmate")
+            logging.info("Checkmate")
             
             checkmate = True
             break
-
+        
+        # Ask player his move (potentially temp)
         move = input("Player move : ")
         
         try:
+            # Player turn
+            # Apply player move
             chessgame.apply_move(move)
-            print(board_visual(chessgame))
+            logging.info(chess_move.board_visual(chessgame))
 
-            best_move = get_bot_move(chessgame)
-            print(best_move)
+            # Bot turn
+            # Get bot move and if capture
+            best_move, capture = chess_move.get_bot_move(chessgame)
+            logging.info(best_move)
 
+            # Apply bot move
             chessgame.apply_move(best_move)
-            print(board_visual(chessgame))
-        except InvalidMove:
-            print("Move not valid") 
+            logging.info(chess_move.board_visual(chessgame))
+
+            # Move pieces with dobot
+            # Get departure and arrival of the piece
+            departure = best_move[0:2]
+            arrival = best_move[2:4]
+
+            if capture == "DIRECT_CAPTURE": # If move a capture
+                capture_piece(arrival)
+                move_piece(departure, arrival)
+            elif capture == "EN_PASSANT": # If move en passant
+                capture_piece(arrival[0] + str(int(arrival[1]) + 1))
+                move_piece(departure, arrival)
+            else:
+                move_piece(departure, arrival)
+        except InvalidMove: # Intercept exception if move is not valid from player and bot
+            logging.error("Move not valid")
+        
+        logging.info(chessgame)
     
-    play_again = input("Play Again ? ")
+    play_again_input = input("Play Again ? ")
 
-    if play_again.lower() == "no":
-        play = False
+    if play_again_input.lower() == "no":
+        play_again = False
 
-device.close()
+dobot_move.stop_dobot()

@@ -1,23 +1,31 @@
 from stockfish import Stockfish
 from typing import Dict
 
+# Init stockfish from intern download
 stockfish = Stockfish()
 
 def board_visual(fen: str) -> str:
-    stockfish.set_fen_position(fen)
+    ### Return a string with board visual in ASCII ###
+
+    stockfish.set_fen_position(fen) # Init the game in stockfish with the actual fen
 
     return stockfish.get_board_visual()
 
 def set_game_parameters(skill_level: int = 20) -> Dict:
+    ### Change stockfish skill level and return stockfish parameters ###
+
     stockfish.reset_engine_parameters()
 
-    stockfish.set_skill_level(20)
+    stockfish.set_skill_level(skill_level) # Change skill of stockfish
 
     return stockfish.get_parameters()
 
-def get_bot_move(fen: str) -> str:
+def get_bot_move(fen: str) -> (str, str):
+    ### Return best move found by Stockfish and if it is a capture ###
+
     stockfish.set_fen_position(fen)
 
-    best_move = stockfish.get_best_move()
+    best_move = stockfish.get_best_move() # Get best moves to play with actual fen
+    capture = str(stockfish.will_move_be_a_capture(best_move)).replace("Capture.", "")
 
-    return best_move
+    return best_move, capture
