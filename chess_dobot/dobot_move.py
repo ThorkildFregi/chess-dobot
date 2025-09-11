@@ -11,7 +11,7 @@ port = available_ports[1].device
 
 device = pydobot.Dobot(port=port, verbose=False)
 
-base_coordinates = {"x": 123, "y": 4, "z": -17, "r": 0}
+base_coordinates = {"x": 123, "y": 4, "z": 0, "r": 0}
 
 def to_base_coord():
     ### Move dobot to base coordinates ###
@@ -32,10 +32,10 @@ def drop_piece():
 def move_to_square(square : str):
     ### Move dobot to a specific square ###
 
-    column = square[0]
-    row = square[1]
+    column_coord = column[square[0]]
+    row_coord = row[square[1]]
 
-    device.move_to(row, column, base_coordinates["z"], base_coordinates["r"], True)
+    device.move_to(row_coord, column_coord, base_coordinates["z"], base_coordinates["r"], True)
 
 def throw_piece():
     return 0
