@@ -29,3 +29,10 @@ def get_bot_move(fen: str) -> (str, str):
     capture = str(stockfish.will_move_be_a_capture(best_move)).replace("Capture.", "")
 
     return best_move, capture
+
+def get_piece_on_square(fen: str, square: str):
+    ### Get the piece on a square ###
+
+    stockfish.set_fen_position(fen)
+
+    return str(stockfish.get_what_is_on_square(square)).replace("Capture.", "")

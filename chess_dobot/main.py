@@ -19,19 +19,19 @@ console.setLevel(logging.INFO)  # Set console to info level
 
 logging.getLogger("").addHandler(console)
 
-def capture_piece(piece_square: str):
+def capture_piece(piece_square: str, piece: str):
     ### Take the piece to capture and throw it ###
 
     dobot_move.move_to_square(piece_square)
-    dobot_move.throw_piece()
+    dobot_move.throw_piece(piece)
 
-def move_piece(departure: str, arrival: str):
+def move_piece(departure: str, arrival: str, piece: str):
     ### Move a piece form a square to another ###
 
     dobot_move.move_to_square(departure)
-    dobot_move.take_piece()
+    dobot_move.take_piece(piece)
     dobot_move.move_to_square(arrival)
-    dobot_move.drop_piece()
+    dobot_move.drop_piece(piece)
     dobot_move.to_base_coord()
 
 play_again = True # Basic bool to know if play again
@@ -55,7 +55,7 @@ while play_again:
             break
         
         # Ask player his move (potentially temp)
-        move = input("Player move : ")
+        move = input("Player move : ").replace(" ", "")
         
         try:
             # Player turn
@@ -77,14 +77,19 @@ while play_again:
             departure = best_move[0:2]
             arrival = best_move[2:4]
 
+            piece_departure = chess_move.get_piece_on_square(chessgame, departure)
+
             if capture == "DIRECT_CAPTURE": # If move a capture
-                capture_piece(arrival)
-                move_piece(departure, arrival)
+                piece_arrival = chess_move.get_piece_on_square(chessgame, arrival)
+                capture_piece(arrival, piece_arrival)
+                move_piece(departure, arrival, piece_departure)
             elif capture == "EN_PASSANT": # If move en passant
-                capture_piece(arrival[0] + str(int(arrival[1]) + 1))
-                move_piece(departure, arrival)
+                square_to_capture = arrival[0] + str(int(arrival[1]) + 1)
+                piece_en_passant = chess_move.get_piece_on_square(chessgame, square_to_capture)
+                capture_piece(square_to_capture, piece_en_passant)
+                move_piece(departure, arrival, piece_departure)
             else:
-                move_piece(departure, arrival)
+                move_piece(departure, arrival, piece_departure)
         except InvalidMove: # Intercept exception if move is not valid from player and bot
             logging.error("Move not valid")
         
