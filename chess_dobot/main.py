@@ -1,8 +1,12 @@
 from Chessnut.game import InvalidMove
 from Chessnut import Game
+from flask import Flask, request, Response
 import dobot_move
 import chess_move
 import logging
+import json
+
+app = flask(__name__)
 
 # Config for logging
 logging.basicConfig(
@@ -34,70 +38,94 @@ def move_piece(departure: str, arrival: str, piece: str):
     dobot_move.drop_piece(piece)
     dobot_move.to_base_coord()
 
-play_again = True # Basic bool to know if play again
+is_playing = False # Basic bool to know if play again
+chessgame = Game()
 
-while play_again:
-    # Set skill of stockfish and print his parameters
-    skill_level = int(input("Skill level of stockfish : "))
-    logging.info(chess_move.set_game_parameters(skill_level))
+@app.route("/parameters", methods=["get"])
+def param():
+    if request.method == "GET":
+        if not is_playing:
+            skill_level = request.args.get("skilllevel", type=int)
+            parameters = chess_move.set_game_parameters(skill_level)
 
-    # Init chessgame with Chessnut
-    chessgame = Game()
-    logging.info(chess_move.board_visual(chessgame))
+            logging.info(parameters)
 
-    checkmate = False
-    while checkmate == False:
-        # Checkmate detection
-        if chessgame.get_moves() == []:
-            logging.info("Checkmate")
-            
-            checkmate = True
-            break
+            return Response(json.dumps(parameters), status=202, mimetype="application/json")
+        else:
+            return Response(status=409)
+    else:
+        return Response(status=405)
+
+@app.route("/start")
+def start():
+    if is_playing:
+        return Response(status=409)
+    else:
+        is_playing = True # Party on going
+
+        # Init chessgame with Chessnut
+        chessgame = Game()
+        logging.info(chess_move.board_visual(chessgame))
+
+        return Response(status=202)
+
+@app.route("/makeamove", methods=["get"])
+def make_a_move():
+    if request.method == "GET":
+        if is_playing:
+            # Checkmate detection
+            if chessgame.get_moves() == []:
+                logging.info("Checkmate")
+                
+                return Response(status=403)
+
+            move = request.args.get("move", type=str)
+
+            try:
+                # Player turn
+                # Apply player move
+                chessgame.apply_move(move)
+                logging.info(chess_move.board_visual(chessgame))
+
+                # Bot turn
+                # Get bot move and if capture
+                best_move, capture = chess_move.get_bot_move(chessgame)
+                logging.info(best_move)
+
+                # Apply bot move
+                chessgame.apply_move(best_move)
+                logging.info(chess_move.board_visual(chessgame))
+
+                # Move pieces with dobot
+                # Get departure and arrival of the piece
+                departure = best_move[0:2]
+                arrival = best_move[2:4]
+
+                piece_departure = chess_move.get_piece_on_square(chessgame, departure)
+
+                if capture == "DIRECT_CAPTURE": # If move a capture
+                    piece_arrival = chess_move.get_piece_on_square(chessgame, arrival)
+                    capture_piece(arrival, piece_arrival)
+                    move_piece(departure, arrival, piece_departure)
+                elif capture == "EN_PASSANT": # If move en passant
+                    square_to_capture = arrival[0] + str(int(arrival[1]) + 1)
+                    piece_en_passant = chess_move.get_piece_on_square(chessgame, square_to_capture)
+                    capture_piece(square_to_capture, piece_en_passant)
+                    move_piece(departure, arrival, piece_departure)
+                else:
+                    move_piece(departure, arrival, piece_departure)
+            except InvalidMove: # Intercept exception if move is not valid from player and bot
+                logging.error("Move not valid")
+
+                return Response(status=400)
         
-        # Ask player his move (potentially temp)
-        move = input("Player move : ").replace(" ", "")
-        
-        try:
-            # Player turn
-            # Apply player move
-            chessgame.apply_move(move)
-            logging.info(chess_move.board_visual(chessgame))
+            logging.info(chessgame)
 
-            # Bot turn
-            # Get bot move and if capture
-            best_move, capture = chess_move.get_bot_move(chessgame)
-            logging.info(best_move)
+            return Response(status=202)    
+        else:
+            return Response(status=409)
+    else:
+        return Response(status=405)
 
-            # Apply bot move
-            chessgame.apply_move(best_move)
-            logging.info(chess_move.board_visual(chessgame))
-
-            # Move pieces with dobot
-            # Get departure and arrival of the piece
-            departure = best_move[0:2]
-            arrival = best_move[2:4]
-
-            piece_departure = chess_move.get_piece_on_square(chessgame, departure)
-
-            if capture == "DIRECT_CAPTURE": # If move a capture
-                piece_arrival = chess_move.get_piece_on_square(chessgame, arrival)
-                capture_piece(arrival, piece_arrival)
-                move_piece(departure, arrival, piece_departure)
-            elif capture == "EN_PASSANT": # If move en passant
-                square_to_capture = arrival[0] + str(int(arrival[1]) + 1)
-                piece_en_passant = chess_move.get_piece_on_square(chessgame, square_to_capture)
-                capture_piece(square_to_capture, piece_en_passant)
-                move_piece(departure, arrival, piece_departure)
-            else:
-                move_piece(departure, arrival, piece_departure)
-        except InvalidMove: # Intercept exception if move is not valid from player and bot
-            logging.error("Move not valid")
-        
-        logging.info(chessgame)
-    
-    play_again_input = input("Play Again ? ")
-
-    if play_again_input.lower() == "no":
-        play_again = False
-
-dobot_move.stop_dobot()
+if __name__ == "__main__":
+    app.run()
