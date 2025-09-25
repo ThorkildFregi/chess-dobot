@@ -1,12 +1,12 @@
+from flask import Flask, request, Response
 from Chessnut.game import InvalidMove
 from Chessnut import Game
-from flask import Flask, request, Response
 import dobot_move
 import chess_move
 import logging
 import json
 
-app = flask(__name__)
+app = Flask(__name__)
 
 # Config for logging
 logging.basicConfig(
