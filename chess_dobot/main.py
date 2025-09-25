@@ -61,8 +61,6 @@ def start():
     else:
         is_playing = True # Party on going
 
-        
-
         return Response(status=202)
 
 @app.route("/makeamove", methods=["get"])
