@@ -1,4 +1,3 @@
 stockfish
-Chessnut
 pydobot
 flask
