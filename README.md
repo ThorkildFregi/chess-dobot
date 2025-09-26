@@ -9,7 +9,7 @@ You will need stockfish (the version is not important).
 
 Then, clone the repo :
 
-````git clone https://github.com/ThorkildFregi/mbot-V1-rescue-line/blob/main/README.md?plain=1 ```
+```git clone https://github.com/ThorkildFregi/mbot-V1-rescue-line/blob/main/README.md?plain=1```
 
 Create a python environment.
 
