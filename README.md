@@ -22,31 +22,31 @@ And you are ready to interact with it !
 
 ## Playing
 
-### [/](/chess_dobot/main.py#L78-80)
+### [/](/chess_dobot/main.py#L78-#L80)
 
 The home link (yes there is a threat, ignore it).
 
 ----------------
 
-### [/resetallcodes](/chess_dobot/main.py#L82-86)
+### [/resetallcodes](/chess_dobot/main.py#L82-#L86)
 
 Erase all the codes in the list.
 
 ----------------
 
-### [/start?code=****&skilllevel=**](/chess_dobot/main.py#L88-108)
+### [/start?code=&skilllevel=](/chess_dobot/main.py#L88-#L108)
 
 Start a new game with you're code and add it in the list. Moreover, you need to set the level of stockfish on a scale of 1 to 20 (don't be too confident if you want to win). Return stockfish parameters.
 
 ----------------
 
-### [/join?code=****](/chess_dobot/main.py#L110-118)
+### [/join?code=](/chess_dobot/main.py#L110-#L118)
 
 Get then fen of the party on going, if you have the right code. Return the fen.
 
 ----------------
 
-### [/makeamove?fen=*********************&move=****](/chess_dobot/main.py#L120-156)
+### [/makeamove?fen=&move=](/chess_dobot/main.py#L120-#L156)
 
 Make the robot make the move. Need the fen now in the party and the move of the player in long algebraic notation. Return the move of the bot.
 
