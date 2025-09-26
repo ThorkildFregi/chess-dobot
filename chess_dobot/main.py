@@ -71,9 +71,19 @@ def roquer(type: str, color: str):
     movement_board(move_king, "")
     movement_board(move_tower, "")
 
-fen = ""
+fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
 codes = []
 playing = 0
+
+@app.route("/")
+def rest_api():
+    return "It is a REST API for chess dobot, please don't interact with it here ! (or I will ban ip you ;) )"
+
+@app.route("/resetallcodes")
+def reset_codes():
+    codes = []
+
+    return Response(status=202)
 
 @app.route("/start", methods=["get"])
 def start():
