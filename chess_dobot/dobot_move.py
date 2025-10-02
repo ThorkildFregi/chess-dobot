@@ -11,7 +11,7 @@ port = available_ports[1].device
 
 device = pydobot.Dobot(port=port, verbose=False)
 
-base_coordinates = {"x": 123, "y": 4, "z": 5, "r": 0}
+base_coordinates = {"x": 143, "y": 4, "z": 25, "r": 0}
 trash_coordinates = {"x": 151, "y": 234, "z": -4, "r": 0}
 
 def to_base_coord():
