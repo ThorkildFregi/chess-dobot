@@ -1,6 +1,6 @@
-from flask import Flask, request, Response
+from flask import Flask, request, Response, redirect, url_for
 from utils import fendiff
-# import dobot_move
+import dobot_move
 import chess_move
 import logging
 import json
@@ -80,14 +80,14 @@ def rest_api():
     return "It is a REST API for chess dobot, please don't interact with it here ! (or I will ban ip you ;) )"
 
 @app.route("/resetparty")
-def player():
+def reset_party():
     global code
     global fen
     
     code = 0
     fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
 
-    return str(code)
+    return redirect(url_for("rest_api"))
 
 @app.route("/start", methods=["get"])
 def start():
@@ -129,13 +129,7 @@ def make_a_move():
 
         if code == player_code:
             new_fen = request.args.get("fen", type=str)
-
-            print(new_fen)
-
             move = fendiff(fen, new_fen)
-
-            print(move)
-
             fen = new_fen
 
             if move == "e1g1":
@@ -153,8 +147,6 @@ def make_a_move():
             # Get bot move and if capture
             best_move, capture_bot, fen = chess_move.get_bot_move(fen)
             logging.info(best_move)
-
-            print(fen)
 
             if move == "e8g8":
                 roquer("petit", "black")
