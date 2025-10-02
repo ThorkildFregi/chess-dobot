@@ -28,7 +28,9 @@ def get_bot_move(fen: str) -> (str, str):
     best_move = stockfish.get_best_move() # Get best moves to play with actual fen
     capture = str(stockfish.will_move_be_a_capture(best_move)).replace("Capture.", "")
 
-    return best_move, capture
+    stockfish.make_moves_from_current_position([best_move])
+
+    return best_move, capture, stockfish.get_fen_position()
 
 def get_piece_on_square(fen: str, square: str):
     ### Get the piece on a square ###

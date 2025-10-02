@@ -46,7 +46,7 @@ Get then fen of the party on going, if you have the right code. Return the fen.
 
 ----------------
 
-### [/makeamove?fen=&move=](/chess_dobot/main.py#L120-#L156)
+### [/makeamove?code=&fen=](/chess_dobot/main.py#L120-#L156)
 
 Make the robot make the move. Need the fen now in the party and the move of the player in long algebraic notation. Return the move of the bot.
 

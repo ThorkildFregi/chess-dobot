@@ -1,5 +1,6 @@
 from flask import Flask, request, Response
-import dobot_move
+from utils import fendiff
+# import dobot_move
 import chess_move
 import logging
 import json
@@ -72,32 +73,34 @@ def roquer(type: str, color: str):
     movement_board(move_tower, "")
 
 fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
-codes = []
-playing = 0
+code = 0
 
 @app.route("/")
 def rest_api():
     return "It is a REST API for chess dobot, please don't interact with it here ! (or I will ban ip you ;) )"
 
-@app.route("/resetallcodes")
-def reset_codes():
-    codes = []
+@app.route("/resetparty")
+def player():
+    global code
+    global fen
+    
+    code = 0
+    fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
 
-    return Response(status=202)
+    return str(code)
 
 @app.route("/start", methods=["get"])
 def start():
-    if request.method == "GET":
-        code = request.args.get("code", type=int)
+    global code
 
-        if code in codes:
+    if request.method == "GET":
+        new_code = request.args.get("code", type=int)
+
+        if code == new_code:
             return Response(status=409)
         else:
-            codes.append(code)
-
-            if codes[0] == code:
-                playing = code
-            
+            code = new_code
+        
             skill_level = request.args.get("skilllevel", type=int)
             parameters = chess_move.set_game_parameters(skill_level)
 
@@ -119,12 +122,21 @@ def join():
 
 @app.route("/makeamove", methods=["get"])
 def make_a_move():
-    if request.method == "GET":
-        code = request.args.get("code", type=int)
+    global fen
 
-        if playing == code:
-            fen = request.args.get("fen", type=str)
-            move = request.args.get("move", type=str)
+    if request.method == "GET":
+        player_code = request.args.get("code", type=int)
+
+        if code == player_code:
+            new_fen = request.args.get("fen", type=str)
+
+            print(new_fen)
+
+            move = fendiff(fen, new_fen)
+
+            print(move)
+
+            fen = new_fen
 
             if move == "e1g1":
                 roquer("petit", "white")
@@ -139,8 +151,10 @@ def make_a_move():
 
             # Bot turn
             # Get bot move and if capture
-            best_move, capture_bot = chess_move.get_bot_move(fen)
+            best_move, capture_bot, fen = chess_move.get_bot_move(fen)
             logging.info(best_move)
+
+            print(fen)
 
             if move == "e8g8":
                 roquer("petit", "black")
@@ -149,7 +163,7 @@ def make_a_move():
 
             movement_board(best_move, capture_bot)
             
-            return Response(json.dumps({"bot_move": best_move}), status=202, mimetype="application/json")
+            return Response(best_move, status=202, mimetype="text/html")
         else:
             return Response(status=409)
     else:
