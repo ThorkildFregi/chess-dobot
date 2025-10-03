@@ -6,11 +6,11 @@
 
 # Checks two different FEN-strings, and determines the move that was made using only standard python modules and functions (and returns in UCI-format)
 
-# The original purpose of this code is to help determine the move made based on only FEN-data. The chessboard sends a continuous stream
+# The original purpose of this code is to help determine the move made based on only FEN-data. The chessboard sends a string
 # of current positions in the form of FEN, and this code determines what move was made using that FEN-data by comparing it to the last
 # known board position.
 
-# Keep in mind that (althrough some simple checks are introduced) no actual validation is being done in this code. You can introduce a package like
+# Keep in mind that (although some simple checks are introduced) no actual validation is being done in this code. You can introduce a package like
 # python-chess or a stockfish wrapper to help validate the FEN-data
 
 intList = ["1", "2", "3", "4", "5", "6", "7", "8"]
@@ -148,18 +148,5 @@ def fendiff(position1, position2):
     if move == "e8a8c8d8":
         return "e8c8"
 
-
-
-
-## #### Examples ####
-## ## "normal moves"
-## print(fendiff("r3kb1r/p2nqppp/5n2/1B2p1B1/4P3/1Q6/PPP2PPP/R3K2R w KQkq - 1 12", "r3kb1r/p2nqppp/5n2/1B2p1B1/4P3/1Q6/PPP2PPP/2KR3R b kq - 2 12"))
-## print(fendiff("r1bqkbnr/pppp1ppp/2n5/4p3/4P3/3B4/PPPP1PPP/RNBQK1NR w KQkq - 0 1", "r1bqkbnr/pppp1ppp/2n5/4p3/4P3/3B1N2/PPPP1PPP/RNBQK2R b KQkq - 0 1"))
-## 
-## ## En passant cases
-## print(fendiff("8/8/4k3/8/5Pp1/3K4/8/8 b - f3 0 1", "8/8/4k3/8/8/3K1p2/8/8 w - - 0 2"))
-## print(fendiff("rnbqkbnr/1ppppppp/8/8/pP6/8/P1PPPPPP/RNBQKBNR b KQkq b3 0 1", "rnbqkbnr/1ppppppp/8/8/8/1p6/P1PPPPPP/RNBQKBNR w KQkq - 0 2"))
-## 
-## ## Promotions
-## print(fendiff("8/3k1P1q/8/8/8/4n3/8/2K5 w - - 0 1", "5N2/3k3q/8/8/8/4n3/8/2K5 b - - 0 1"))
-## print(fendiff("Q7/8/1K6/8/8/8/1kp5/8 b - - 0 9", "Q7/8/1K6/8/8/8/1k6/2q5 w - - 0 10"))
+# Thanks to Klepvink & Dani4kor !
+# Link to Klepvink repo : https://github.com/Klepvink/OSSCB
