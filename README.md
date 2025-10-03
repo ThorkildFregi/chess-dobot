@@ -48,7 +48,7 @@ Erase someone from waiting queue by index
 
 ### [/start?name=&code=&skilllevel=](/chess_dobot/main.py#L88-#L108)
 
-Start a new game with you're code or add it in the waiting queue if a game is on going. Moreover, you need to set the level of stockfish on a scale of 1 to 20 (don't be too confident if you want to win). Return stockfish parameters. Bonus -> we take youre name for the waiting queue on the [/installation](#L31-L35)
+Start a new game with you're code or add it in the waiting queue if a game is on going. Moreover, you need to set the level of stockfish on a scale of 1 to 20 (don't be too confident if you want to win). Return stockfish parameters. Bonus -> we take youre name for the waiting queue on the [/installation](#installation)
 
 ----------------
 
