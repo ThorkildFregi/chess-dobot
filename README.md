@@ -22,32 +22,44 @@ And you are ready to interact with it !
 
 ## Playing
 
-### [/](/chess_dobot/main.py#L78-#L80)
+### [/](/chess_dobot/main.py#L101-#L103)
 
 The home link (yes there is a threat, ignore it).
 
 ----------------
 
-### [/resetallcodes](/chess_dobot/main.py#L82-#L86)
+### [/installation](/chess_dobot/main.py#L105-#L107)
 
-Erase all the codes in the list.
+The html page for the installation.
 
 ----------------
 
-### [/start?code=&skilllevel=](/chess_dobot/main.py#L88-#L108)
+### [/resetparty](/chess_dobot/main.py#L109-#L120)
 
-Start a new game with you're code and add it in the list. Moreover, you need to set the level of stockfish on a scale of 1 to 20 (don't be too confident if you want to win). Return stockfish parameters.
+To reset all party on going.
+
+----------------
+
+### [/erasefromwaitingqueue?index=](/chess_dobot/main.py#L122-#L133)
+
+Erase someone from waiting queue by index
+
+----------------
+
+### [/start?name=&code=&skilllevel=](/chess_dobot/main.py#L88-#L108)
+
+Start a new game with you're code or add it in the waiting queue if a game is on going. Moreover, you need to set the level of stockfish on a scale of 1 to 20 (don't be too confident if you want to win). Return stockfish parameters. Bonus -> we take youre name for the waiting queue on the [/installation](#L31-L35)
 
 ----------------
 
 ### [/join?code=](/chess_dobot/main.py#L110-#L118)
 
-Get then fen of the party on going, if you have the right code. Return the fen.
+If you have the right code, return the fen of the party on going.
 
 ----------------
 
 ### [/makeamove?code=&fen=](/chess_dobot/main.py#L120-#L156)
 
-Make the robot make the move. Need the fen now in the party and the move of the player in long algebraic notation. Return the move of the bot.
+Make the robot make the move. Need the fen now in the party and the code to identify. Return the move of the bot.
 
 ----------------
