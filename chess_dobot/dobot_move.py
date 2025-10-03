@@ -1,4 +1,5 @@
 from serial.tools import list_ports
+from time import sleep
 import pydobot
 
 # 50   -> 4.5
@@ -10,8 +11,9 @@ print(f'available ports: {[x.device for x in available_ports]}')
 port = available_ports[1].device
 
 device = pydobot.Dobot(port=port, verbose=False)
+device.suck(False)
 
-base_coordinates = {"x": 143, "y": 4, "z": 25, "r": 0}
+base_coordinates = {"x": 143, "y": 4, "z": 20, "r": 0}
 trash_coordinates = {"x": 151, "y": 234, "z": -4, "r": 0}
 
 def to_base_coord():
@@ -21,36 +23,35 @@ def to_base_coord():
 
 to_base_coord()
 
-column = {"a" : -83.5, "b" : -58.5, "c" : -33.5, "d" : -8.5, "e" : 16.5, "f" : 41.5, "g" : 66.5, "h" : 91.5}
-row = {"1" : 298, "2" : 273, "3" : 248, "4" : 223, "5" : 198, "6" : 173, "7" : 148, "8" : 123}
+column = {"a" : -76, "b" : -55, "c" : -32, "d" : -11, "e" : 14, "f" : 35, "g" : 59, "h" : 80}
+row = {"1" : 293, "2" : 273, "3" : 249, "4" : 228, "5" : 203, "6" : 183, "7" : 159, "8" : 137}
+height = {"PAWN" : -21, "ROOK" : -17, "KING" : -12, "QUEEN" : -12 , "KNIGHT" : -12, "BISHOP" : -11}
 
 def take_piece(piece : str):
     ### Take the piece from the square ###
 
     (x, y, z, r, j1, j2, j3, j4) = device.pose()
 
-    if piece == "PAWN":
-        z = -20
-
-    device.move_to(x, y, z, r, True)
+    device.move_to(x, y, height[piece], r, True)
 
     device.suck(True)
 
-    device.move_to(x, y, base_coordinates["z"], r, True)
+    sleep(1)
+
+    device.move_to(x, y, z, r, True)
 
 def drop_piece(piece : str):
     ### Take the piece from the square ###
 
     (x, y, z, r, j1, j2, j3, j4) = device.pose()
 
-    if piece == "PAWN":
-        z = -20
-
-    device.move_to(x, y, z, r, True)
+    device.move_to(x, y, height[piece], r, True)
 
     device.suck(False)
 
-    device.move_to(x, y, base_coordinates["z"], r, True)
+    sleep(1)
+
+    device.move_to(x, y, z, r, True)
 
 def move_to_square(square : str):
     ### Move dobot to a specific square ###

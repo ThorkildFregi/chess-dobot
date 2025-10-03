@@ -37,7 +37,7 @@ def get_piece_on_square(fen: str, square: str):
 
     stockfish.set_fen_position(fen)
 
-    return str(stockfish.get_what_is_on_square(square)).replace("Capture.", "")
+    return str(stockfish.get_what_is_on_square(square)).replace("Piece.", "").replace("WHITE_", "").replace("BLACK_", "")
 
 def get_capture(fen: str, move: str):
     #### Get if move a capture and what ###

@@ -130,22 +130,23 @@ def make_a_move():
         if code == player_code:
             new_fen = request.args.get("fen", type=str)
             move = fendiff(fen, new_fen)
-            fen = new_fen
 
             if move == "e1g1":
                 roquer("petit", "white")
             elif move == "e1c1":
                 roquer("grand", "white")
 
-            logging.info(chess_move.board_visual(fen))
-
             capture = chess_move.get_capture(fen, move)
+
+            logging.info(chess_move.board_visual(new_fen))
 
             movement_board(move, capture)
 
+            fen = new_fen
+
             # Bot turn
             # Get bot move and if capture
-            best_move, capture_bot, fen = chess_move.get_bot_move(fen)
+            best_move, capture_bot, new_fen = chess_move.get_bot_move(fen)
             logging.info(best_move)
 
             if move == "e8g8":
@@ -154,6 +155,8 @@ def make_a_move():
                 roquer("grand", "black")
 
             movement_board(best_move, capture_bot)
+
+            fen = new_fen
             
             return Response(best_move, status=202, mimetype="text/html")
         else:
