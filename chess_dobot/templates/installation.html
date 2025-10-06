@@ -9,7 +9,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Home</title>
+    <title>Installation</title>
 
     <!-- <link href="" rel="icon"/> -->
 
@@ -19,9 +19,50 @@
     <script src="https://cdn.jsdelivr.net/npm/uikit@3.20.8/dist/js/uikit-icons.min.js"></script>
 </head>
 <body>
-    <div class="uk-container uk-align-center uk-flex uk-flex-center uk-flex-middle" uk-height-viewport="expand: true">
-        <div>
-            <h1 class="uk-text-center">Installe notre application !</h1>
+    <nav class="uk-navbar-container" uk-navbar>
+        <div class="uk-navbar-left">
+            <ul class="uk-navbar-nav">
+                <li class="uk-active uk-margin-medium-left uk-text-bolder"><a href="#waiting" uk-scroll>LISTE D'ATTENTE</a></li>
+        </div>
+    </nav>
+    <div class="uk-container uk-flex uk-flex-column uk-margin-large-top" uk-height-viewport="expand: true">
+        <div class="uk-container uk-flex uk-flex-column uk-flex-center uk-text-center">
+            <h1 class="uk-text-bolder">Installe notre application !</h1>
+            <p class="uk-text-lighter">(Pour Android seulement)</p>
+        </div>
+        <div class="uk-margin-large-top">
+            <h2 class="uk-text-bolder">Etape 1 :</h2>
+            <p class="uk-text-bold">Allez dans les paramètres, puis "Sources d'installation" (Si introuvable et "sources inconnues" aussi, passer étape 1 et 2)</p>
+        </div>
+        <div class="uk-margin-small-top">
+            <h2 class="uk-text-bolder">Etape 2 :</h2>
+            <p class="uk-text-bold">Activez les "Sources inconnues"</p>
+        </div>
+        <div class="uk-margin-small-top">
+            <h2 class="uk-text-bolder">Etape 3 :</h2>
+            <p class="uk-text-bold">Télécharger le fichier <a href="https://drive.google.com/drive/folders/1QWNDPb3o3DEzs4XZsDVDrI-63q14aIty?usp=drive_link">ici</a></p>
+        </div>
+        <div class="uk-margin-small-top">
+            <h2 class="uk-text-bolder">Etape 4 :</h2>
+            <p class="uk-text-bold">Lancez le fichier APK et suivez les instructions (Si message d'erreur, chercher Gabriel)</p>
+        </div>
+        <div class="uk-margin-small-top">
+            <h2 class="uk-text-bolder">Etape 5 :</h2>
+            <p class="uk-text-bold">(Optionnel, mais conseillé) Désactivez les sources inconnues</p>
+        </div>
+        <div class="uk-margin-small-top">
+            <h2 class="uk-text-bolder">Etape 6 :</h2>
+            <p class="uk-text-bold">Lancez l'application et jouer !</p>
+        </div>
+        <hr>
+        <div class="uk-container uk-flex uk-flex-column uk-flex-center uk-text-center">
+            <h1 id="waiting" class="uk-text-bolder">Liste d'attente</h1>
+        </div>
+        {% for param in params %}
+        <div class="uk-margin-small-top">
+            <h3>{{loop.index}} - {{param["name"]}}</h3>
+        </div>
+        {% endfor %}
     </div>
 </body>
 </html>
